@@ -24,7 +24,7 @@ import Results from './Results'
         methods: {
             searchMovie(){
                 axios({
-                     url: "http://192.168.43.103:5000/findmovie",
+                     url: "https://wheretowatch-backend.herokuapp.com/findmovie",
                      method: "POST",
                     data: {
                         movie_search: this.movie_search

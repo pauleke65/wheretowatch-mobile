@@ -136,7 +136,7 @@ export default {
     methods: {
         getdets(){
              axios({
-                     url: "http://192.168.43.103:5000/getdets",
+                     url: "https://wheretowatch-backend.herokuapp.com/getdets",
                      method: "POST",
                     data: {
                         imdb_id: this.imdb_id
@@ -147,6 +147,7 @@ export default {
                      
                    //  console.log(res)
                     if (res.movieImage.status != "not found"){
+                        console.log(res.movieImage.poster)
                         this.movieImage = res.movieImage.poster
                     }
                     
@@ -166,7 +167,7 @@ export default {
 
         wherePage(){
             axios({
-                     url: "http://192.168.43.103:5000/wheretoowatch",
+                     url: "https://wheretowatch-backend.herokuapp.com/wheretoowatch",
                      method: "POST",
                     data: {
                         imdb_id: this.imdb_id
@@ -198,7 +199,7 @@ export default {
 
         similarPage(){
             axios({
-                     url: "http://192.168.43.103:5000/findsimilarmovie",
+                     url: "https://wheretowatch-backend.herokuapp.com/findsimilarmovie",
                      method: "POST",
                     data: {
                         imdb_id: this.imdb_id
