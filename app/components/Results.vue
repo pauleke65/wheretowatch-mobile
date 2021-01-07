@@ -3,7 +3,7 @@
          <ListView row="1" marginTop="5%" @itemTap="onItemTap"
             for="result in resultss">
             <v-template>
-                    <Label height="20" :text="addmov(result.title,result.year)"/>
+                    <Label height="20" :text="addmov(result)"/>
             </v-template>
         </ListView>
     </Page>
@@ -18,7 +18,18 @@ export default {
         }
     },
     methods: {
-        addmov(title, year){
+        addmov(result){
+            var title = result.title
+            var year
+            
+            if (result.year == undefined){
+                if(result.release_date != null){
+                var date = result.release_date.split("-")
+                year = date[0]
+                }
+                else year = "0"
+            }
+            else year = result.year
             return `${title} (${year})`
         },
 

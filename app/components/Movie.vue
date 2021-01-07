@@ -1,10 +1,13 @@
 <template>
     <Page backgroundColor="#000000" @loaded="getdets" actionBarHidden="true">
 
-            <StackLayout marginTop="5%" height="95%">
+            <ScrollView  marginTop="1%" height="95%">
+              
+      
+            <StackLayout>
             <Label fontWeight="bold" :text="title" horizontalAlignment="center" fontSize="40%" textWrap="true" />
 
-            <GridLayout marginTop="3%" rows="auto" columns="auto, auto">
+            <GridLayout marginTop="3%" height="40%" width="100%" rows="auto" columns="auto, auto">
             <Image :src="movieImage" stretch="aspectFill" row="0" col="0" width="50%"/>
 
             <StackLayout marginLeft="2%" row="0" col="1">
@@ -36,21 +39,21 @@
                     </FormattedString>
                 </Label >
 
-                <Label  >
+                <Label textWrap="true">
                     <FormattedString>
                     <Span fontSize="17%" fontWeight="bold" text="Genres: " textWrap="true" />
                     <Span fontSize="15%" :text="genre" textWrap="true" />
                     </FormattedString>
                 </Label>
 
-                <Label   textWrap="true">
+                <Label textWrap="true">
                     <FormattedString>
                     <Span fontSize="17%" fontWeight="bold" text="Stars: " textWrap="true" />
                     <Span fontSize="15%" :text="stars" textWrap="true" />
                     </FormattedString>
                 </Label>
 
-                <Label  >
+                <Label>
                     <FormattedString>
                     <Span fontSize="17%" fontWeight="bold" text="Languages: " textWrap="true" />
                     <Span fontSize="15%" :text="language" textWrap="true" />
@@ -71,7 +74,7 @@
            paddingRight="2%"
            textWrap="true" />
 
-           <GridLayout height="20%" columns="*, *">
+           <GridLayout height="200px" columns="*, *">
 
                <Button height="55%" background="#db1010" col="0" text="Where to Watch" @tap="wherePage" />
                <Button height="55%" background="#221f1f" col="1" text="Similar Movies" @tap="similarPage" />
@@ -81,6 +84,9 @@
            </GridLayout>
 
         </StackLayout>
+
+        </ScrollView>
+
 <!--            
          <ListView row="1" marginTop="20%" @itemTap="onItemTap"
             for="w in watch">
@@ -108,6 +114,8 @@
 </template>
 <script>
 import axios from 'axios'
+import Where from './Where';
+import Results from './Results'
 export default {
    props: ["imdb_id"],
     data(){
@@ -137,7 +145,7 @@ export default {
                  .then((r) => {
                      var res = r.data
                      
-                     console.log(res)
+                   //  console.log(res)
                     if (res.movieImage.status != "not found"){
                         this.movieImage = res.movieImage.poster
                     }
@@ -154,6 +162,68 @@ export default {
                     
                  })
                  .catch(e => alert(e))
+        },
+
+        wherePage(){
+            axios({
+                     url: "http://192.168.43.103:5000/wheretoowatch",
+                     method: "POST",
+                    data: {
+                        imdb_id: this.imdb_id
+                     }
+                 })
+                 .then((r) => {
+                     console.log(r.data.result)
+                    //  alert(r.data)
+                    //  console.error(r.data)
+                    //  console.log(r)
+                        this.$navigateTo(Where, {
+                         animated:true,
+                         transition: {
+                             name:'slideLeft',
+                             duration: 200
+                         },
+                         props: {
+                            results: r.data.result,
+                            title: this.title
+                         }
+                    })
+                 })
+                 .catch((e) => {
+                     console.log(e)
+                     alert(e)
+                 })
+            
+        },
+
+        similarPage(){
+            axios({
+                     url: "http://192.168.43.103:5000/findsimilarmovie",
+                     method: "POST",
+                    data: {
+                        imdb_id: this.imdb_id
+                     }
+                 })
+                 .then((r) => {
+                     if(r.data != "No Similar Movies"){
+                         console.log(r.data)
+                        this.$navigateTo(Results, {
+                         animated:true,
+                         transition: {
+                             name:'slideLeft',
+                             duration: 200
+                         },
+                         props: {
+                            results: r.data
+                         }
+                    })
+                     }
+                     else alert("No Similar Movies Found")
+                 })
+                 .catch((e) => {
+                     console.log(e)
+                     alert(e)
+                 })
         }
         
     }
